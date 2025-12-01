@@ -1,0 +1,111 @@
+.sidebar {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    bottom: 1rem;
+    width: 250px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(41, 41, 41, 0.2));
+    backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 1.5rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    box-shadow: 0 12px 50px 0 rgba(0, 0, 0, 0.6), inset 0 0 0 1.5px rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1100;
+}
+
+.sidebar.closed {
+    transform: translateX(-110%);
+}
+
+.sidebar-header {
+    margin-bottom: 2rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.777);
+    border-radius: 50px;
+    padding: 1rem;
+}
+
+.sidebar-header img {
+    max-width: 100px;
+    height: auto;
+}
+
+/* Close button (mobile) */
+.sidebar-close {
+    display: none;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav li {
+    margin-bottom: 1rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 15px;
+    color: #ccc;
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.sidebar-link span {
+    margin-left: 1rem;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+
+    /* Make sidebar full-screen overlay when open on mobile */
+    .sidebar {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        padding: 2rem;
+        transform: translateX(-100%);
+        z-index: 1200;
+        overflow-y: auto;
+    }
+
+    .sidebar.closed {
+        transform: translateX(-100%);
+    }
+
+    .sidebar:not(.closed) {
+        transform: translateX(0);
+    }
+
+    .sidebar-close {
+        display: inline-flex;
+    }
+}
