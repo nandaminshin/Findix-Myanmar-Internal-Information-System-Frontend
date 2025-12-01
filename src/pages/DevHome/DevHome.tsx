@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Nav from "../components/Nav/Nav";
-import Sidebar from "../components/Sidebar/Sidebar";
+import Nav from "../../components/Nav/Nav";
+import Sidebar from "../../components/Sidebar/Sidebar";
 import './DevHome.css';
 
 const DevHome: React.FC = () => {

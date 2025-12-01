@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Login from "../pages/Login/Login.tsx";
-import DevHome from "../pages/DevHome.tsx";
+import DevHome from "../pages/DevHome/DevHome.tsx";
 import App from "../App.tsx"
 
 const index = () => {
