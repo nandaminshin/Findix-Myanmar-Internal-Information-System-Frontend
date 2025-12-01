@@ -16,7 +16,7 @@ const index = () => {
                     element: <DevHome />
                 },
                 {
-                    path: "/login",
+                    path: '/login',
                     element: <Login />
                 },
                 // {
