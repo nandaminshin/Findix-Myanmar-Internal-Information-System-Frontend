@@ -12,13 +12,17 @@ const index = () => {
             ),
             children: [
                 {
+                    path: '/',
+                    element: <DevHome />
+                },
+                {
                     path: "/login",
                     element: <Login />
                 },
-                {
-                    path: "/dev/home",
-                    element: <DevHome />
-                }
+                // {
+                //     path: "/dev/home",
+                //     element: <DevHome />
+                // }
             ]
         }
     ])
