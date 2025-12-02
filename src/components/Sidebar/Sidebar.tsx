@@ -11,7 +11,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     return (
         <aside className={`sidebar ${isOpen ? '' : 'closed'}`} aria-hidden={!isOpen}>
             <div className="sidebar-header">
-                <img src="/images/findixlogo.png" alt="Findix Logo" />
+                <img src="/images/transparent-logo.svg" alt="Findix Logo" />
             </div>
             {/* Close button visible on mobile */}
             <button className="sidebar-close" onClick={onClose} aria-label="Close sidebar">

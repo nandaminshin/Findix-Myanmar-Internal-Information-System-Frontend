@@ -1,6 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Bell, User, LogOut, Settings, Menu } from 'lucide-react';
 import './Nav.css';
+import { AuthContext } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 interface NavProps {
     toggleSidebar: () => void;
@@ -12,6 +15,26 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
 
     const notificationRef = useRef<HTMLDivElement>(null);
     const profileRef = useRef<HTMLDivElement>(null);
+
+    const auth = useContext(AuthContext);
+    const user = auth?.user;
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/logout`, {}, { withCredentials: true });
+            if (res.status === 200) {
+                if (auth) {
+                    auth.dispatch({ type: 'LOGOUT' });
+                    console.log('Logout successful');
+                    navigate('/login');
+                }
+            }
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+
+    }
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -36,8 +59,8 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
                     <Menu size={24} />
                 </button>
                 <span className="user-info">
-                    <span className="user-name">John Doe</span>
-                    <span className="user-role">Admin</span>
+                    <span className="user-name">{user?.name}</span>
+                    <span className="user-role">{user?.role}</span>
                 </span>
             </div>
             <div className="navbar-right">
@@ -46,9 +69,9 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
                     {notificationDropdown && (
                         <div className="dropdown notification-dropdown">
                             <ul>
-                                <li>Notification 1</li>
-                                <li>Notification 2</li>
-                                <li>Notification 3</li>
+                                <li role="button" tabIndex={0} onClick={() => { /* notification 1 click */ }}>Notification 1</li>
+                                <li role="button" tabIndex={0} onClick={() => { /* notification 2 click */ }}>Notification 2</li>
+                                <li role="button" tabIndex={0} onClick={() => { /* notification 3 click */ }}>Notification 3</li>
                             </ul>
                         </div>
                     )}
@@ -58,11 +81,11 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
                     {profileDropdown && (
                         <div className="dropdown profile-dropdown">
                             <ul>
-                                <li>
+                                <li onClick={() => { /* account click */ }}>
                                     <Settings size={16} />
                                     <span>Account</span>
                                 </li>
-                                <li>
+                                <li onClick={() => { handleLogout() }}>
                                     <LogOut size={16} />
                                     <span>Logout</span>
                                 </li>
