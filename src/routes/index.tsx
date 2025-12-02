@@ -13,7 +13,7 @@ type ProtectedRouteProps = {
     allowedRoles?: string[];
 };
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAuth = true, allowedRoles }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAuth = true }) => {
     const auth = useContext(AuthContext);
     if (!auth) {
         // If no auth context is available, redirect to login
