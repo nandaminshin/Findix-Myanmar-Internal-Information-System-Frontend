@@ -6,6 +6,7 @@ import AuthNavigator from "../components/AuthNavigator.tsx";
 import { AuthContext } from "../contexts/AuthContext.tsx";
 import React, { useContext } from "react";
 import type { ReactNode } from "react";
+import axios from "../helpers/axios.ts"
 
 type ProtectedRouteProps = {
     children: ReactNode;
@@ -24,6 +25,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAuth =
 
     if (loading) {
         return <div>Loading...</div>;
+    }
+
+    if (requireAuth) {
+        axios.get("/api/v1/auth/me");
     }
 
     if (requireAuth && !user) {
@@ -55,7 +60,7 @@ const AppRoutes = () => {
             ),
             children: [
                 {
-                    index: true,
+                    path: '/',
                     element: (
                         <ProtectedRoute requireAuth={true}>
                             <DevHome />

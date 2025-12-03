@@ -22,7 +22,7 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
 
     const handleLogout = async () => {
         try {
-            const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/logout`, {}, { withCredentials: true });
+            const res = await axios.post("/api/v1/logout", {},);
             if (res.status === 200) {
                 if (auth) {
                     auth.dispatch({ type: 'LOGOUT' });

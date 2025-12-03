@@ -1,6 +1,6 @@
 import './Login.css';
 import React, { useContext, useState } from 'react';
-import axios from 'axios';
+import axios from '../../helpers/axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -15,20 +15,11 @@ const Login: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/api/v1/login`,
+            const res = await axios.post("/api/v1/login",
                 { email, password },
-                {
-                    withCredentials: true,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
             );
 
             if (res.status === 200) {
-                console.log('Login successful:', res.data);
-
                 if (auth) {
                     auth.dispatch({ type: 'LOGIN', payload: res.data });
                 }

@@ -26,6 +26,15 @@ type AuthContextValue = AuthState & {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+// Only initialize if running in browser and env var exists
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+(typeof window === 'undefined' || !backendUrl)
+
+const socket = io(backendUrl, {
+    transports: ['websocket'],
+    withCredentials: true,
+});
+
 const AuthReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
         case 'LOGIN':
@@ -50,7 +59,6 @@ const AuthReducer = (state: AuthState, action: AuthAction): AuthState => {
 const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [state, dispatch] = useReducer(AuthReducer, { user: null });
     const [loading, setLoading] = useState(true);
-    const [socket, setSocket] = useState<Socket | null>(null);
 
     // Initial auth check (guard localStorage usage)
     useEffect(() => {
@@ -69,31 +77,26 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
     }, []);
 
+
     // Initialize socket on client only
     useEffect(() => {
+        if (socket !== null) {
+            socket.on('connect', () => {
+                console.log('Socket connected in AuthContext');
+            });
 
-        // Only initialize if running in browser and env var exists
-        const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        if (typeof window === 'undefined' || !backendUrl) return;
+            socket.on('disconnect', () => {
+                console.log('Socket disconnected in AuthContext');
+            });
 
-        const s = io(backendUrl, {
-            transports: ['websocket']
-        });
-        setSocket(s);
-
-        s.on('connect', () => {
-            console.log('Socket connected in AuthContext');
-        });
-
-        s.on('disconnect', () => {
-            console.log('Socket disconnected in AuthContext');
-        });
-
-        return () => {
-            s.off('connect');
-            s.off('disconnect');
-            s.disconnect();
-        };
+            return () => {
+                socket.off('connect');
+                socket.off('disconnect');
+                socket.disconnect();
+            };
+        } else {
+            console.log("No backend URL provided.")
+        }
     }, []);
 
     return (
