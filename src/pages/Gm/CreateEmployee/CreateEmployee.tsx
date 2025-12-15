@@ -127,9 +127,11 @@ const CreateEmployee: React.FC = () => {
             };
 
             console.log(payload);
-            await axios.post('/api/fmiis-backend/v001/register', payload);
-            alert('Employee created successfully!');
-            navigate('/gm-md/employee-management');
+            const res = await axios.post('/api/fmiis-backend/v001/register', payload);
+            if (res.status === 200) {
+                alert('Employee created successfully!');
+                navigate('/gm-md/employee-management');
+            }
         } catch (err: any) {
             console.error("Error creating employee:", err);
 
