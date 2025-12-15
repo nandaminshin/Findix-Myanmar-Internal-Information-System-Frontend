@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../../../helpers/axios';
-import { ArrowLeft, User, Check, Calendar as CalendarIcon, Mail, Phone, MapPin, Briefcase, Hash } from 'lucide-react';
+import { ArrowLeft, User, Check, Mail, Hash } from 'lucide-react';
 import './ManageSingleEmployee.css';
 
 interface FamilyInfo {
