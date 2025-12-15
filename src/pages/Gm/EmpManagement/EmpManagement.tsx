@@ -124,8 +124,21 @@ const EmpManagement: React.FC = () => {
                                     <td className="text-sm font-medium">{employee.email}</td>
                                     <td className="text-sm">{employee.phone}</td>
                                     <td className="text-sm"> {new Date(employee.date_of_hire).toLocaleDateString("en-GB")}</td>
-                                    <td>
-                                        <button className="!text-gray-400 hover:!text-white transition-colors !text-xs !font-medium !bg-white/5 !px-2 !py-1 !rounded hover:!bg-white/10 active:!bg-white/20" onClick={() => navigate(`/gm-md/employee/${employee.id}`)}>
+                                    <td className=''>
+                                        <button
+                                            className="mb-6 relative z-10 cursor-pointer !text-green-500 hover:!text-green-300 transition-colors !text-xs !font-medium !bg-white/5 !px-2 !py-1 !rounded hover:!bg-white/10 active:!bg-white/20"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                const targetId = employee.id || (employee as any)._id;
+                                                console.log("Manage clicked for:", employee, "Target ID:", targetId);
+                                                if (targetId) {
+                                                    navigate(`/gm-md/employee/${targetId}`);
+                                                } else {
+                                                    console.error("No ID found for employee:", employee);
+                                                    alert("Error: Employee ID not found");
+                                                }
+                                            }}
+                                        >
                                             Manage
                                         </button>
                                     </td>
