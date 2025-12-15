@@ -377,7 +377,7 @@ const CreateEmployee: React.FC = () => {
 
                         <div className="flex justify-end gap-3 pt-6 border-t border-white/10">
                             <button type="button" onClick={() => navigate('/gm-md/employee-management')} className="compact-btn btn-secondary" disabled={isSubmitting}>Cancel</button>
-                            <button type="submit" className="compact-btn btn-white flex items-center gap-2" disabled={isSubmitting}>
+                            <button type="submit" className="compact-btn btn-white items-center gap-2" disabled={isSubmitting}>
                                 {isSubmitting ? (
                                     <>
                                         <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
