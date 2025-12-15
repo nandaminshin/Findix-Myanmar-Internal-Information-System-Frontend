@@ -1,13 +1,17 @@
 import './App.css'
+import { Outlet } from 'react-router-dom';
+import Sidebar from './components/Gm/Sidebar/Sidebar';
+import Nav from './components/Gm/Nav/Nav';
 import { useState, useEffect } from 'react';
-import Login from './pages/Login/Login';
 
-function App() {
+function GlobApp() {
 
     // Initialize sidebar open state based on viewport width
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(() => (typeof window !== 'undefined' ? window.innerWidth >= 769 : true));
 
-
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
 
     // Keep sidebar responsive when crossing the breakpoint
     useEffect(() => {
@@ -21,9 +25,11 @@ function App() {
 
     return (
         <div className={`dev-home ${sidebarOpen ? 'sidebar-open' : ''}`}>
-            <Login />
+            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+            <Nav toggleSidebar={toggleSidebar} />
+            <Outlet />
         </div>
     )
 }
 
-export default App
+export default GlobApp

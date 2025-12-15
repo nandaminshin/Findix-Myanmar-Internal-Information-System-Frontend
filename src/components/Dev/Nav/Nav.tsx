@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Bell, User, LogOut, Settings, Menu } from 'lucide-react';
 import './Nav.css';
-import { AuthContext } from '../../contexts/AuthContext';
+import { AuthContext } from '../../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -22,12 +22,12 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
 
     const handleLogout = async () => {
         try {
-            const res = await axios.post("/api/v1/logout", {},);
+            const res = await axios.post("/api/fmiis-backend/v001/logout", {},);
             if (res.status === 200) {
                 if (auth) {
                     auth.dispatch({ type: 'LOGOUT' });
                     console.log('Logout successful');
-                    navigate('/login');
+                    navigate('/');
                 }
             }
         } catch (error) {

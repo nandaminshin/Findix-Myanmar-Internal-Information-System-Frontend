@@ -1,12 +1,20 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
-import Login from "../pages/Login/Login.tsx";
-import DevHome from "../pages/DevHome/DevHome.tsx";
+import DevHome from "../pages/Dev/DevHome/DevHome.tsx";
 import App from "../App.tsx";
+import DevApp from "../DevApp.tsx";
+import GlobApp from "../GlobApp.tsx";
+import GmApp from "../GmApp.tsx";
+import HrApp from "../HrApp.tsx"
 import AuthNavigator from "../components/AuthNavigator.tsx";
 import { AuthContext } from "../contexts/AuthContext.tsx";
 import React, { useContext } from "react";
 import type { ReactNode } from "react";
-import axios from "../helpers/axios.ts"
+import DevNoti from "../pages/Dev/DevNoti/DevNoti.tsx";
+import DevLeaveRequest from "../pages/Dev/DevLeaveRequest/DevLeaveRequest.tsx";
+import DevSalary from "../pages/Dev/DevSalary/DevSalary.tsx";
+import GmHome from "../pages/Gm/GmHome/GmHome.tsx";
+import EmpManagement from "../pages/Gm/EmpManagement/EmpManagement.tsx";
+import CreateEmployee from "../pages/Gm/CreateEmployee/CreateEmployee.tsx";
 
 type ProtectedRouteProps = {
     children: ReactNode;
@@ -18,7 +26,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAuth =
     const auth = useContext(AuthContext);
     if (!auth) {
         // If no auth context is available, redirect to login
-        return <Navigate to="/login" />;
+        return <Navigate to="/" />;
     }
 
     const { user, loading } = auth;
@@ -27,12 +35,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAuth =
         return <div>Loading...</div>;
     }
 
-    if (requireAuth) {
-        axios.get("/api/v1/auth/me");
-    }
 
     if (requireAuth && !user) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/" />;
     }
 
     // if (allowedRoles && !allowedRoles.includes(user?.role)) {
@@ -40,11 +45,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAuth =
     //     return <Navigate to="/" />;
     // }
 
-    if (!requireAuth && user) {
-        if (user.role === 'admin') return <Navigate to="/admin" />;
-        if (user.role === 'superAdmin') return <Navigate to="/super-admin" />;
-        if (user.role === 'user') return <Navigate to="/" />;
-    }
+    // if (!requireAuth && user) {
+    //     if (user.role === 'dev') return <Navigate to="/dev/home" />;
+    //     if (user.role === 'superAdmin') return <Navigate to="/super-admin" />;
+    //     if (user.role === 'user') return <Navigate to="/" />;
+    // }
 
     return <>{children}</>;
 };
@@ -54,13 +59,25 @@ const AppRoutes = () => {
         {
             path: '/',
             element: (
+                <App />
+            ),
+            // children: [
+            //     {
+            //         path: '',
+            //         element: < Login />
+            //     }
+            // ],
+        },
+        {
+            path: '/dev',
+            element: (
                 <AuthNavigator>
-                    <App />
+                    <DevApp />
                 </AuthNavigator>
             ),
             children: [
                 {
-                    path: '/',
+                    path: '',
                     element: (
                         <ProtectedRoute requireAuth={true}>
                             <DevHome />
@@ -68,9 +85,96 @@ const AppRoutes = () => {
                     ),
                 },
                 {
-                    path: 'login',
-                    element: <Login />,
+                    path: 'noti',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <DevNoti />
+                        </ProtectedRoute>
+                    ),
                 },
+                {
+                    path: 'leave-request',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <DevLeaveRequest />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'salary',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <DevSalary />
+                        </ProtectedRoute>
+                    ),
+                },
+            ],
+        },
+        {
+            path: '/glob',
+            element: (
+                <AuthNavigator>
+                    <GlobApp />
+                </AuthNavigator>
+            ),
+            children: [
+
+            ],
+        },
+        {
+            path: '/gm-md',
+            element: (
+                <AuthNavigator>
+                    <GmApp />
+                </AuthNavigator>
+            ),
+            children: [
+                {
+                    path: '',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <GmHome />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'employee-management',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <EmpManagement />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'create-new-employee',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <CreateEmployee />
+                        </ProtectedRoute>
+                    ),
+                },
+            ],
+        },
+        {
+            path: '/hr',
+            element: (
+                <AuthNavigator>
+                    <HrApp />
+                </AuthNavigator>
+            ),
+            children: [
+                // {
+                //     path: '',
+                //     element: (
+                //         <ProtectedRoute requireAuth={true}>
+                //             <DevHome />
+                //         </ProtectedRoute>
+                //     ),
+                // },
+                // {
+                //     path: 'login',
+                //     element: <Login />,
+                // },
             ],
         },
     ]);

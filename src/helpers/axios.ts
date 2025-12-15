@@ -8,7 +8,7 @@ axios.interceptors.response.use(
     (error) => {
         if (error.response && error.response.status === 401) {
             localStorage.removeItem('user');
-            window.location.href = '/login';
+            window.location.href = '/';
         }
         // For any other error, just reject the promise so that the .catch()
         // block in your component can handle it.

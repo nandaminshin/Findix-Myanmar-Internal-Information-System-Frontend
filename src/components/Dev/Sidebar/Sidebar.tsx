@@ -1,5 +1,6 @@
 import React from 'react';
-import { Home, BarChart2, Users, Settings, LogOut } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import { Home, FileText, CircleDollarSign, Bell } from 'lucide-react';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -20,34 +21,28 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             <nav className="sidebar-nav">
                 <ul>
                     <li>
-                        <a href="#" className="sidebar-link">
+                        <NavLink to="/dev" end className="sidebar-link">
                             <Home size={20} />
                             <span>Home</span>
-                        </a>
+                        </NavLink>
                     </li>
                     <li>
-                        <a href="#" className="sidebar-link">
-                            <BarChart2 size={20} />
-                            <span>Analytics</span>
-                        </a>
+                        <NavLink to="/dev/noti" className="sidebar-link">
+                            <Bell size={20} />
+                            <span>Notifications</span>
+                        </NavLink>
                     </li>
                     <li>
-                        <a href="#" className="sidebar-link">
-                            <Users size={20} />
-                            <span>Users</span>
-                        </a>
+                        <NavLink to="/dev/leave-request" className="sidebar-link">
+                            <FileText size={20} />
+                            <span>Leave Request</span>
+                        </NavLink>
                     </li>
                     <li>
-                        <a href="#" className="sidebar-link">
-                            <Settings size={20} />
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" className="sidebar-link">
-                            <LogOut size={20} />
-                            <span>Logout</span>
-                        </a>
+                        <NavLink to="/dev/salary" className="sidebar-link">
+                            <CircleDollarSign size={20} />
+                            <span>Salary</span>
+                        </NavLink>
                     </li>
                 </ul>
             </nav>

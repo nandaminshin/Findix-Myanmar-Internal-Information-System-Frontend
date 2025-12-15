@@ -15,16 +15,34 @@ const Login: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await axios.post("/api/v1/login",
+            const res = await axios.post("/api/fmiis-backend/v001/login",
                 { email, password },
             );
 
             if (res.status === 200) {
+                console.log(res)
                 if (auth) {
                     auth.dispatch({ type: 'LOGIN', payload: res.data });
                 }
-                setError(null);
-                navigate('/');
+                switch (res.data.role) {
+                    case "dev":
+                        navigate('/dev')
+                        break;
+                    case "glob":
+                        navigate("/glob")
+                        break;
+                    case "gm":
+                        navigate("/gm-md")
+                        break;
+                    case "md":
+                        navigate("/gm-md")
+                        break;
+                    case "hr":
+                        navigate("/hr")
+                        break;
+                    default:
+                        break;
+                }
             }
         } catch (error) {
             console.error('Login failed:', error);
