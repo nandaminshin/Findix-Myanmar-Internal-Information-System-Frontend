@@ -45,6 +45,7 @@ const CreateEmployee: React.FC = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Initial Form State
     const initialFormState: EmployeeForm = {
@@ -116,7 +117,11 @@ const CreateEmployee: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
         setError('');
+
         try {
             // Transform data for backend
             const payload = {
@@ -126,27 +131,35 @@ const CreateEmployee: React.FC = () => {
                 date_of_retirement: formData.date_of_retirement ? format(formData.date_of_retirement, "yyyy-MM-dd") : '',
             };
 
-            console.log(payload);
+            console.log("Submitting payload...", payload);
             const res = await axios.post('/api/fmiis-backend/v001/register', payload);
-            if (res.status === 201 || res.status === 200) {
-                alert('Employee created successfully!');
-                navigate('/gm-md/employee-management');
-            }
+            console.log("Registration Response:", res);
+
+            // If axios didn't throw, we assume success
+            alert('Employee created successfully!');
+            navigate('/gm-md/employee-management');
+
         } catch (err: any) {
             console.error("Error creating employee:", err);
+            console.log("Current Base URL:", axios.defaults.baseURL);
 
             if (axios.isAxiosError(err)) {
-                // Backend error exists?
                 const backendError = err.response?.data?.error;
 
+                if (err.code === "ERR_NETWORK") {
+                    alert("Network Error: Check console for CORS or URL issues. BaseURL: " + axios.defaults.baseURL);
+                }
+
                 if (backendError) {
-                    setError(backendError);  // Set real error message from server
+                    setError(backendError);
                 } else {
-                    setError(err.message);  // Fallback: Axios error message
+                    setError(err.message);
                 }
             } else {
                 setError("Unexpected error occurred");
             }
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -363,8 +376,17 @@ const CreateEmployee: React.FC = () => {
                         </section>
 
                         <div className="flex justify-end gap-3 pt-6 border-t border-white/10">
-                            <button type="button" onClick={() => navigate('/gm-md/employee-management')} className="compact-btn btn-secondary">Cancel</button>
-                            <button type="submit" className="compact-btn btn-white">Create Employee</button>
+                            <button type="button" onClick={() => navigate('/gm-md/employee-management')} className="compact-btn btn-secondary" disabled={isSubmitting}>Cancel</button>
+                            <button type="submit" className="compact-btn btn-white flex items-center gap-2" disabled={isSubmitting}>
+                                {isSubmitting ? (
+                                    <>
+                                        <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
+                                        Creating...
+                                    </>
+                                ) : (
+                                    'Create Employee'
+                                )}
+                            </button>
                         </div>
                     </form>
                 </div>
