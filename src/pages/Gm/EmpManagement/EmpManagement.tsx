@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './EmpManagement.css';
+import { socket } from '../../../lib/socket';
 import axios from '../../../helpers/axios';
 
 const EmpManagement: React.FC = () => {
@@ -41,6 +42,16 @@ const EmpManagement: React.FC = () => {
 
     useEffect(() => {
         fetchEmployees();
+
+        // Listen for real-time updates
+        socket.on("employee_created", () => {
+            console.log("📡 Employee created event received");
+            fetchEmployees();
+        });
+
+        return () => {
+            socket.off("employee_created");
+        };
     }, []);
 
     return (
@@ -114,7 +125,7 @@ const EmpManagement: React.FC = () => {
                                     <td className="text-sm">{employee.phone}</td>
                                     <td className="text-sm"> {new Date(employee.date_of_hire).toLocaleDateString("en-GB")}</td>
                                     <td>
-                                        <button className="!text-gray-400 hover:!text-white transition-colors !text-xs !font-medium !bg-white/5 !px-2 !py-1 !rounded hover:!bg-white/10 active:!bg-white/20">
+                                        <button className="!text-gray-400 hover:!text-white transition-colors !text-xs !font-medium !bg-white/5 !px-2 !py-1 !rounded hover:!bg-white/10 active:!bg-white/20" onClick={() => navigate(`/gm-md/employee/${employee.id}`)}>
                                             Manage
                                         </button>
                                     </td>

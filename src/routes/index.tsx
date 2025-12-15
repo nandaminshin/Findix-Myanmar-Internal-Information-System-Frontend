@@ -15,6 +15,7 @@ import DevSalary from "../pages/Dev/DevSalary/DevSalary.tsx";
 import GmHome from "../pages/Gm/GmHome/GmHome.tsx";
 import EmpManagement from "../pages/Gm/EmpManagement/EmpManagement.tsx";
 import CreateEmployee from "../pages/Gm/CreateEmployee/CreateEmployee.tsx";
+import ManageSingleEmployee from "../pages/Gm/ManageSingleEmployee/ManageSingleEmployee.tsx";
 
 type ProtectedRouteProps = {
     children: ReactNode;
@@ -153,6 +154,14 @@ const AppRoutes = () => {
                         </ProtectedRoute>
                     ),
                 },
+                {
+                    path: 'employee/:id',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <ManageSingleEmployee />
+                        </ProtectedRoute>
+                    ),
+                }
             ],
         },
         {
