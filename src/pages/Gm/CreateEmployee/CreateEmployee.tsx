@@ -128,7 +128,7 @@ const CreateEmployee: React.FC = () => {
 
             console.log(payload);
             const res = await axios.post('/api/fmiis-backend/v001/register', payload);
-            if (res.status === 201) {
+            if (res.status === 201 || res.status === 200) {
                 alert('Employee created successfully!');
                 navigate('/gm-md/employee-management');
             }
