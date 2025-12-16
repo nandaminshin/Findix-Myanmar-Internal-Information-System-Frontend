@@ -16,6 +16,7 @@ import GmHome from "../pages/Gm/GmHome/GmHome.tsx";
 import EmpManagement from "../pages/Gm/EmpManagement/EmpManagement.tsx";
 import CreateEmployee from "../pages/Gm/CreateEmployee/CreateEmployee.tsx";
 import ManageSingleEmployee from "../pages/Gm/ManageSingleEmployee/ManageSingleEmployee.tsx";
+import UpdateEmployee from "../pages/Gm/UpdateEmployee/UpdateEmployee.tsx";
 
 type ProtectedRouteProps = {
     children: ReactNode;
@@ -159,6 +160,14 @@ const AppRoutes = () => {
                     element: (
                         <ProtectedRoute requireAuth={true}>
                             <ManageSingleEmployee />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'update-employee/:id',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <UpdateEmployee />
                         </ProtectedRoute>
                     ),
                 }

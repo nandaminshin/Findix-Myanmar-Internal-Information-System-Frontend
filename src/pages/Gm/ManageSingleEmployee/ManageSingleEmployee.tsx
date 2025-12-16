@@ -71,7 +71,7 @@ const ManageSingleEmployee: React.FC = () => {
 
     const handleUpdate = () => {
         // Placeholder for update logic
-        alert('Update functionality coming soon!');
+        navigate(`/gm-md/update-employee/${id}`);
     };
 
     const handleDelete = () => {
