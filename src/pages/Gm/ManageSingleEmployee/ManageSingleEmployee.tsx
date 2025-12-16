@@ -43,6 +43,10 @@ const ManageSingleEmployee: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteSecretCode, setDeleteSecretCode] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+
     useEffect(() => {
         const fetchEmployee = async () => {
             try {
@@ -70,14 +74,38 @@ const ManageSingleEmployee: React.FC = () => {
     }, [id]);
 
     const handleUpdate = () => {
-        // Placeholder for update logic
         navigate(`/gm-md/update-employee/${id}`);
     };
 
     const handleDelete = () => {
-        // Placeholder for delete logic
-        if (window.confirm('Are you sure you want to delete this employee?')) {
-            alert('Delete functionality coming soon!');
+        setShowDeleteModal(true);
+        setDeleteSecretCode('');
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteSecretCode) return;
+
+        setIsDeleting(true);
+        try {
+            // Using standard REST DELETE with body
+            await axios.delete(`/api/fmiis-backend/v001/delete/${id}`, {
+                data: { secret_code: deleteSecretCode },
+            });
+
+            alert('Employee deleted successfully');
+            navigate('/gm-md/employee-management');
+        } catch (err: any) {
+            console.error("Delete error:", err);
+            if (axios.isAxiosError(err)) {
+                const msg = err.response?.data?.error || err.response?.data?.message || "Failed to delete employee";
+                alert(msg);
+            } else {
+                alert("An unexpected error occurred");
+            }
+        } finally {
+            setIsDeleting(false);
+            // Don't close modal immediately on error so user can retry or see what happened
+            // On success we navigated away.
         }
     };
 
@@ -123,7 +151,7 @@ const ManageSingleEmployee: React.FC = () => {
     }
 
     return (
-        <div className="manage-single-employee-page">
+        <div className="manage-single-employee-page relative">
             <div className="main-content">
                 <div className="max-w-5xl mx-auto pb-12">
                     {/* Header */}
@@ -296,6 +324,54 @@ const ManageSingleEmployee: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-zinc-900 border border-white/10 rounded-2xl p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
+                        <h3 className="text-xl font-bold text-white mb-2">Delete Employee</h3>
+                        <p className="text-gray-400 text-sm mb-6">
+                            Are you sure you want to delete <span className="text-white font-medium">{employee.name}</span>?
+                            This action cannot be undone.
+                        </p>
+
+                        <div className="mb-6">
+                            <label className="text-xs text-gray-500 font-medium mb-1.5 block">ENTER SECRET CODE</label>
+                            <input
+                                type="password"
+                                value={deleteSecretCode}
+                                onChange={(e) => setDeleteSecretCode(e.target.value)}
+                                className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-red-500/50 transition-colors"
+                                placeholder="Enter code to confirm"
+                                autoFocus
+                            />
+                        </div>
+
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                className="!px-3 !py-1.5 !rounded-lg !bg-zinc-800 !hover:bg-zinc-700 !text-zinc-400 !hover:text-white !transition-colors !text-xs !font-medium !border !border-zinc-700/50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                disabled={isDeleting || !deleteSecretCode}
+                                className="flex justify-center !px-3 !py-1.5 !rounded-lg !bg-red-500/10 !hover:bg-red-500/20 !text-red-500 !border !border-red-500/20 !transition-colors !text-xs !font-medium !disabled:opacity-50 !disabled:cursor-not-allowed !flex !items-center !gap-2"
+                            >
+                                {isDeleting ? (
+                                    <>
+                                        <div className="w-3 h-3 border-2 border-red-500/30 border-t-red-500 rounded-full animate-spin" />
+                                        <span>Deleting...</span>
+                                    </>
+                                ) : (
+                                    'Confirm Delete'
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
