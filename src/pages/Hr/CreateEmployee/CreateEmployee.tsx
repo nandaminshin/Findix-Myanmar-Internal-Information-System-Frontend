@@ -1,15 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Eye, EyeOff, ArrowLeft, Calendar as CalendarIcon, User, Upload } from 'lucide-react';
+import React, { useState } from 'react';
+import { Eye, EyeOff, ArrowLeft, Calendar as CalendarIcon } from 'lucide-react';
 import axios from '../../../helpers/axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { format } from "date-fns"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { AuthContext } from '../../../contexts/AuthContext';
-import { useContext } from 'react';
-// import { cn } from "../../../lib/utils" - removing unused if not needed, or keeping if reused elsewhere. The previous replacement removed usage.
 
-import './UpdateEmployee.css';
+import './CreateEmployee.css';
 
 interface FamilyInfo {
     dad: boolean;
@@ -39,21 +36,14 @@ interface EmployeeForm {
     emergency_phone: string;
     family_info: FamilyInfo;
     note: string;
-    image?: string
+    image?: string;
 }
 
-const UpdateEmployee: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
+const CreateEmployee: React.FC = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [newImage, setNewImage] = useState<boolean>(false);
-
-    const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
-    const auth = useContext(AuthContext);
 
     // Initial Form State
     const initialFormState: EmployeeForm = {
@@ -81,52 +71,10 @@ const UpdateEmployee: React.FC = () => {
             spouse_allowance: false,
             child: 0
         },
-        note: '',
-        image: ''
+        note: ''
     };
 
     const [formData, setFormData] = useState<EmployeeForm>(initialFormState);
-
-    useEffect(() => {
-        const fetchEmployee = async () => {
-            if (!id) return;
-            try {
-                const response = await axios.get(`/api/fmiis-backend/v001/get-single-employee/${id}`);
-                const emp = response.data.employee;
-
-                if (emp) {
-                    setFormData({
-                        name: emp.name || '',
-                        email: emp.email || '',
-                        phone: emp.phone || '',
-                        password: emp.password || '', // Pre-fill password if available
-                        role: emp.role || 'dev',
-                        secret_code: emp.secret_code || '',
-                        emp_no: emp.emp_no || '',
-                        birthday: emp.birthday ? new Date(emp.birthday) : undefined,
-                        date_of_hire: emp.date_of_hire ? new Date(emp.date_of_hire) : undefined,
-                        salary: emp.salary || 0,
-                        date_of_retirement: emp.date_of_retirement ? new Date(emp.date_of_retirement) : undefined,
-                        nrc: emp.nrc || '',
-                        graduated_uni: emp.graduated_uni || '',
-                        address: emp.address || '',
-                        emergency_address: emp.emergency_address || '',
-                        emergency_phone: emp.emergency_phone || '',
-                        family_info: emp.family_info || initialFormState.family_info,
-                        note: emp.note || '',
-                        image: emp.image || ''
-                    });
-                }
-                setLoading(false);
-            } catch (err) {
-                console.error('Error fetching employee:', err);
-                setError('Failed to fetch employee details');
-                setLoading(false);
-            }
-        };
-
-        fetchEmployee();
-    }, [id]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
@@ -165,30 +113,6 @@ const UpdateEmployee: React.FC = () => {
         }));
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            if (file.type === 'image/jpeg' || file.type === 'image/png') {
-                setSelectedImageFile(file);
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setFormData(prev => ({
-                        ...prev,
-                        image: reader.result as string
-                    }));
-                };
-                reader.readAsDataURL(file);
-            } else {
-                alert('Please upload only JPG or PNG files.');
-            }
-        }
-    };
-
-    const triggerFileInput = () => {
-        fileInputRef.current?.click();
-        setNewImage(true);
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (isSubmitting) return;
@@ -197,55 +121,24 @@ const UpdateEmployee: React.FC = () => {
         setError('');
 
         try {
-            // 1. Upload image FIRST if selected
-            let finalImagePath = formData.image;
-
-            if (selectedImageFile && id) {
-                const imageFormData = new FormData();
-                imageFormData.append('profile_image', selectedImageFile);
-
-                console.log("Uploading profile image first...");
-                // Using the specific endpoint provided by user
-                const uploadRes = await axios.post(`/api/fmiis-backend/v001/upload-avatar/${id}`, imageFormData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
-
-                if (uploadRes.data && uploadRes.data.path) {
-                    finalImagePath = uploadRes.data.path;
-                    console.log("Image uploaded, new path:", finalImagePath);
-                }
-            }
-
-            // 2. Update text info using the (potentially new) image path
+            // Transform data for backend
             const payload = {
                 ...formData,
-                image: finalImagePath, // Pass the string path (old or new) to the update endpoint
                 birthday: formData.birthday ? format(formData.birthday, "yyyy-MM-dd") : '',
                 date_of_hire: formData.date_of_hire ? format(formData.date_of_hire, "yyyy-MM-dd") : '',
                 date_of_retirement: formData.date_of_retirement ? format(formData.date_of_retirement, "yyyy-MM-dd") : '',
             };
 
-            console.log("Submitting update payload...", payload);
-            await axios.post(`/api/fmiis-backend/v001/gm-update/${id}`, payload);
+            console.log("Submitting payload...", payload);
+            const res = await axios.post('/api/fmiis-backend/v001/register', payload);
+            console.log("Registration Response:", res);
 
-            alert('Employee updated successfully!');
-            if (auth?.user?.id == id) {
-                await auth?.dispatch({
-                    type: 'UPDATE', payload: {
-                        id: id!,
-                        name: formData.name,
-                        email: formData.email,
-                        role: formData.role,
-                        image: finalImagePath!,
-                    }
-                });
-                navigate(`/gm-md/employee/${id}`);
-            } else {
-                navigate(`/gm-md/employee/${id}`);
-            }
+            // If axios didn't throw, we assume success
+            alert('Employee created successfully!');
+            navigate('/hr/employee-management');
 
         } catch (err: any) {
-            console.error("Error updating employee:", err);
+            console.error("Error creating employee:", err);
             console.log("Current Base URL:", axios.defaults.baseURL);
 
             if (axios.isAxiosError(err)) {
@@ -268,57 +161,21 @@ const UpdateEmployee: React.FC = () => {
         }
     };
 
-    if (loading) {
-        return (
-            <div className="update-employee-page flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-            </div>
-        );
-    }
-
     return (
-        <div className="update-employee-page">
+        <div className="create-employee-page">
             <div className="main-content">
-                <div className="max-w-4xl mx-auto update-emp-container">
+                <div className="max-w-4xl mx-auto create-emp-container">
                     <div className="flex items-center gap-4 mb-6">
-                        <button onClick={() => navigate(`/gm-md/employee/${id}`)} className="flex items-center gap-2 !bg-zinc-950 hover:!bg-zinc-900 !text-white !px-3 !py-1.5 !rounded-lg transition-all shadow-md hover:shadow-lg !font-medium !text-sm !border !border-zinc-800">
+                        <button onClick={() => navigate('/hr/employee-management')} className="flex items-center gap-2 !bg-zinc-950 hover:!bg-zinc-900 !text-white !px-3 !py-1.5 !rounded-lg transition-all shadow-md hover:shadow-lg !font-medium !text-sm !border !border-zinc-800">
                             <ArrowLeft size={20} />
                         </button>
                         <div>
-                            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">Update Employee</h1>
-                            <p className="text-gray-400 text-sm">Update details for {formData.name}</p>
+                            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">Create New Employee</h1>
+                            <p className="text-gray-400 text-sm">Fill in the details to register a new staff member</p>
                         </div>
                     </div>
 
                     <form onSubmit={handleSubmit} className="glass-panel space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                        {/* Profile Image - New Section */}
-                        <div className="flex flex-col items-center gap-4 py-4 border-b border-white/10">
-                            <div className="relative group cursor-pointer" onClick={triggerFileInput}>
-                                <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-white/20 bg-zinc-900 flex items-center justify-center">
-                                    {formData.image && !newImage ? (
-                                        <img src={import.meta.env.VITE_BACKEND_URL + formData.image} alt="Profile" className="w-full h-full object-cover" />
-                                    ) : formData.image ? (
-                                        <img src={formData.image} alt="Profile" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <User size={64} className="text-gray-500" />
-                                    )}
-                                </div>
-                                <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Upload className="text-white" size={24} />
-                                </div>
-                            </div>
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleImageChange}
-                                accept="image/jpeg,image/png"
-                                className="hidden"
-                            />
-                            {/* <button type="button" onClick={triggerFileInput} className="text-sm text-blue-400 hover:text-blue-300">
-                                Change Profile Photo
-                            </button> */}
-                        </div>
-
                         {/* Personal Information */}
                         <section>
                             <h3 className="section-title">Personal Information</h3>
@@ -491,7 +348,6 @@ const UpdateEmployee: React.FC = () => {
                                             name="password"
                                             value={formData.password}
                                             onChange={handleInputChange}
-                                            placeholder="Password"
                                             className="form-input-compact !pr-10"
                                             style={{ paddingRight: '2.5rem' }}
                                         />
@@ -503,7 +359,6 @@ const UpdateEmployee: React.FC = () => {
                                             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                         </button>
                                     </div>
-                                    <p className="text-[10px] text-gray-500 mt-1">Leave unchanged to keep current password (if pre-filled)</p>
                                 </div>
                                 <div className="space-y-1.5">
                                     <label className="text-xs text-gray-400 font-medium ml-1">Secret Code</label>
@@ -519,15 +374,15 @@ const UpdateEmployee: React.FC = () => {
                         </section>
 
                         <div className="flex justify-end gap-3 pt-6 border-t border-white/10">
-                            <button type="button" onClick={() => navigate(`/gm-md/employee/${id}`)} className="compact-btn btn-secondary" disabled={isSubmitting}>Cancel</button>
+                            <button type="button" onClick={() => navigate('/hr/employee-management')} className="compact-btn btn-secondary" disabled={isSubmitting}>Cancel</button>
                             <button type="submit" className="compact-btn btn-white items-center gap-2" disabled={isSubmitting}>
                                 {isSubmitting ? (
                                     <>
                                         <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></span>
-                                        Updating...
+                                        Creating...
                                     </>
                                 ) : (
-                                    'Update Employee'
+                                    'Create Employee'
                                 )}
                             </button>
                         </div>
@@ -538,4 +393,4 @@ const UpdateEmployee: React.FC = () => {
     );
 };
 
-export default UpdateEmployee;
+export default CreateEmployee;

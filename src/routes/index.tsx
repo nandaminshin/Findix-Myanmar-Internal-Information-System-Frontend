@@ -17,6 +17,11 @@ import EmpManagement from "../pages/Gm/EmpManagement/EmpManagement.tsx";
 import CreateEmployee from "../pages/Gm/CreateEmployee/CreateEmployee.tsx";
 import ManageSingleEmployee from "../pages/Gm/ManageSingleEmployee/ManageSingleEmployee.tsx";
 import UpdateEmployee from "../pages/Gm/UpdateEmployee/UpdateEmployee.tsx";
+import HrHome from "../pages/Hr/HrHome/HrHome.tsx";
+import HrEmpManagement from "../pages/Hr/EmpManagement/EmpManagement.tsx";
+import HrCreateEmployee from "../pages/Hr/CreateEmployee/CreateEmployee.tsx";
+import HrManageSingleEmployee from "../pages/Hr/ManageSingleEmployee/ManageSingleEmployee.tsx";
+import HrUpdateEmployee from "../pages/Hr/UpdateEmployee/UpdateEmployee.tsx";
 
 type ProtectedRouteProps = {
     children: ReactNode;
@@ -183,18 +188,46 @@ const AppRoutes = () => {
                 </AuthNavigator>
             ),
             children: [
-                // {
-                //     path: '',
-                //     element: (
-                //         <ProtectedRoute requireAuth={true}>
-                //             <DevHome />
-                //         </ProtectedRoute>
-                //     ),
-                // },
-                // {
-                //     path: 'login',
-                //     element: <Login />,
-                // },
+                {
+                    path: '',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <HrHome />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'employee-management',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <HrEmpManagement />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'create-new-employee',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <HrCreateEmployee />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'employee/:id',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <HrManageSingleEmployee />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'update-employee/:id',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <HrUpdateEmployee />
+                        </ProtectedRoute>
+                    ),
+                }
             ],
         },
     ]);

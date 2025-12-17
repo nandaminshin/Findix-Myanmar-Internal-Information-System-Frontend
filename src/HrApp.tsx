@@ -1,7 +1,7 @@
 import './App.css'
 import { Outlet } from 'react-router-dom';
-import Sidebar from './components/Dev/Sidebar/Sidebar';
-import Nav from './components/Dev/Nav/Nav';
+import Sidebar from './components/Hr/Sidebar/Sidebar';
+import Nav from './components/Hr/Nav/Nav';
 import { useState, useEffect } from 'react';
 
 function HrApp() {

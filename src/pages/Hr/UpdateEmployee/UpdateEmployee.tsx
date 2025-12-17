@@ -7,7 +7,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { AuthContext } from '../../../contexts/AuthContext';
 import { useContext } from 'react';
-// import { cn } from "../../../lib/utils" - removing unused if not needed, or keeping if reused elsewhere. The previous replacement removed usage.
 
 import './UpdateEmployee.css';
 
@@ -218,6 +217,7 @@ const UpdateEmployee: React.FC = () => {
 
             // 2. Update text info using the (potentially new) image path
             const payload = {
+                id: id,
                 ...formData,
                 image: finalImagePath, // Pass the string path (old or new) to the update endpoint
                 birthday: formData.birthday ? format(formData.birthday, "yyyy-MM-dd") : '',
@@ -239,9 +239,9 @@ const UpdateEmployee: React.FC = () => {
                         image: finalImagePath!,
                     }
                 });
-                navigate(`/gm-md/employee/${id}`);
+                navigate(`/hr/employee/${id}`);
             } else {
-                navigate(`/gm-md/employee/${id}`);
+                navigate(`/hr/employee/${id}`);
             }
 
         } catch (err: any) {
@@ -281,7 +281,7 @@ const UpdateEmployee: React.FC = () => {
             <div className="main-content">
                 <div className="max-w-4xl mx-auto update-emp-container">
                     <div className="flex items-center gap-4 mb-6">
-                        <button onClick={() => navigate(`/gm-md/employee/${id}`)} className="flex items-center gap-2 !bg-zinc-950 hover:!bg-zinc-900 !text-white !px-3 !py-1.5 !rounded-lg transition-all shadow-md hover:shadow-lg !font-medium !text-sm !border !border-zinc-800">
+                        <button onClick={() => navigate(`/hr/employee/${id}`)} className="flex items-center gap-2 !bg-zinc-950 hover:!bg-zinc-900 !text-white !px-3 !py-1.5 !rounded-lg transition-all shadow-md hover:shadow-lg !font-medium !text-sm !border !border-zinc-800">
                             <ArrowLeft size={20} />
                         </button>
                         <div>
@@ -314,9 +314,6 @@ const UpdateEmployee: React.FC = () => {
                                 accept="image/jpeg,image/png"
                                 className="hidden"
                             />
-                            {/* <button type="button" onClick={triggerFileInput} className="text-sm text-blue-400 hover:text-blue-300">
-                                Change Profile Photo
-                            </button> */}
                         </div>
 
                         {/* Personal Information */}
@@ -519,7 +516,7 @@ const UpdateEmployee: React.FC = () => {
                         </section>
 
                         <div className="flex justify-end gap-3 pt-6 border-t border-white/10">
-                            <button type="button" onClick={() => navigate(`/gm-md/employee/${id}`)} className="compact-btn btn-secondary" disabled={isSubmitting}>Cancel</button>
+                            <button type="button" onClick={() => navigate(`/hr/employee/${id}`)} className="compact-btn btn-secondary" disabled={isSubmitting}>Cancel</button>
                             <button type="submit" className="compact-btn btn-white items-center gap-2" disabled={isSubmitting}>
                                 {isSubmitting ? (
                                     <>

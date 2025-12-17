@@ -1,0 +1,9 @@
+/* Reuse styling from GmHome or customize if needed */
+
+
+/* 
+ * Since we are essentially using the same class names as GmHome/DevHome 
+ * and assuming there's a global CSS or shared component CSS, 
+ * we might not need much here. 
+ * But ensuring the file exists is important for the import in tsx.
+ */
