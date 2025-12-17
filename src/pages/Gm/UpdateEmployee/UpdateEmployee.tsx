@@ -5,6 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { format } from "date-fns"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { AuthContext } from '../../../contexts/AuthContext';
+import { useContext } from 'react';
 // import { cn } from "../../../lib/utils" - removing unused if not needed, or keeping if reused elsewhere. The previous replacement removed usage.
 
 import './UpdateEmployee.css';
@@ -37,7 +39,7 @@ interface EmployeeForm {
     emergency_phone: string;
     family_info: FamilyInfo;
     note: string;
-    image?: string;
+    image?: string
 }
 
 const UpdateEmployee: React.FC = () => {
@@ -48,6 +50,10 @@ const UpdateEmployee: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [newImage, setNewImage] = useState<boolean>(false);
+
+    const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+    const auth = useContext(AuthContext);
 
     // Initial Form State
     const initialFormState: EmployeeForm = {
@@ -163,6 +169,7 @@ const UpdateEmployee: React.FC = () => {
         const file = e.target.files?.[0];
         if (file) {
             if (file.type === 'image/jpeg' || file.type === 'image/png') {
+                setSelectedImageFile(file);
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     setFormData(prev => ({
@@ -179,6 +186,7 @@ const UpdateEmployee: React.FC = () => {
 
     const triggerFileInput = () => {
         fileInputRef.current?.click();
+        setNewImage(true);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -189,22 +197,53 @@ const UpdateEmployee: React.FC = () => {
         setError('');
 
         try {
-            // Transform data for backend
+            // 1. Upload image FIRST if selected
+            let finalImagePath = formData.image;
+
+            if (selectedImageFile && id) {
+                const imageFormData = new FormData();
+                imageFormData.append('profile_image', selectedImageFile);
+
+                console.log("Uploading profile image first...");
+                // Using the specific endpoint provided by user
+                const uploadRes = await axios.post(`/api/fmiis-backend/v001/upload-avatar/${id}`, imageFormData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+
+                if (uploadRes.data && uploadRes.data.path) {
+                    finalImagePath = uploadRes.data.path;
+                    console.log("Image uploaded, new path:", finalImagePath);
+                }
+            }
+
+            // 2. Update text info using the (potentially new) image path
             const payload = {
-                id: id, // Explicitly include ID
+                id: id,
                 ...formData,
+                image: finalImagePath, // Pass the string path (old or new) to the update endpoint
                 birthday: formData.birthday ? format(formData.birthday, "yyyy-MM-dd") : '',
                 date_of_hire: formData.date_of_hire ? format(formData.date_of_hire, "yyyy-MM-dd") : '',
                 date_of_retirement: formData.date_of_retirement ? format(formData.date_of_retirement, "yyyy-MM-dd") : '',
             };
 
             console.log("Submitting update payload...", payload);
-            const res = await axios.post('/api/fmiis-backend/v001/gm-update', payload);
-            console.log("Update Response:", res);
+            await axios.post('/api/fmiis-backend/v001/gm-update', payload);
 
-            // If axios didn't throw, we assume success
             alert('Employee updated successfully!');
-            navigate(`/gm-md/employee/${id}`);
+            if (auth?.user?.id == id) {
+                await auth?.dispatch({
+                    type: 'UPDATE', payload: {
+                        id: id!,
+                        name: formData.name,
+                        email: formData.email,
+                        role: formData.role,
+                        image: finalImagePath!,
+                    }
+                });
+                navigate(`/gm-md/employee/${id}`);
+            } else {
+                navigate(`/gm-md/employee/${id}`);
+            }
 
         } catch (err: any) {
             console.error("Error updating employee:", err);
@@ -257,7 +296,9 @@ const UpdateEmployee: React.FC = () => {
                         <div className="flex flex-col items-center gap-4 py-4 border-b border-white/10">
                             <div className="relative group cursor-pointer" onClick={triggerFileInput}>
                                 <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-white/20 bg-zinc-900 flex items-center justify-center">
-                                    {formData.image ? (
+                                    {formData.image && !newImage ? (
+                                        <img src={import.meta.env.VITE_BACKEND_URL + formData.image} alt="Profile" className="w-full h-full object-cover" />
+                                    ) : formData.image ? (
                                         <img src={formData.image} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
                                         <User size={64} className="text-gray-500" />

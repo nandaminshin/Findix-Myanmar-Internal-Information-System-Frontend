@@ -61,7 +61,9 @@ const AppRoutes = () => {
         {
             path: '/',
             element: (
-                <App />
+                <AuthNavigator>
+                    <App />
+                </AuthNavigator>
             ),
             // children: [
             //     {

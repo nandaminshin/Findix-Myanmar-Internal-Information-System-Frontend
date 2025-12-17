@@ -50,7 +50,9 @@ const ManageSingleEmployee: React.FC = () => {
     useEffect(() => {
         const fetchEmployee = async () => {
             try {
-                const response = await axios.get(`/api/fmiis-backend/v001/get-single-employee/${id}`);
+                const response = await axios.get(`/api/fmiis-backend/v001/get-single-employee/${id}`, {
+                    params: { _t: new Date().getTime() }
+                });
                 console.log("Single Employee API Response:", response.data);
 
                 if (response.data && response.data.employee) {
@@ -175,8 +177,7 @@ const ManageSingleEmployee: React.FC = () => {
                                 <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center shadow-2xl">
                                     {employee.image ? (
                                         <img
-                                            src={employee.image}
-                                            alt={employee.name}
+                                            src={import.meta.env.VITE_BACKEND_URL + employee.image}
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (

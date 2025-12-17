@@ -16,6 +16,7 @@ type AuthState = {
 
 type AuthAction =
     | { type: 'LOGIN'; payload: User }
+    | { type: 'UPDATE'; payload: User }
     | { type: 'LOGOUT' };
 
 type AuthContextValue = AuthState & {
@@ -38,6 +39,13 @@ const socket = io(backendUrl, {
 const AuthReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
         case 'LOGIN':
+            try {
+                if (action.payload) localStorage.setItem('user', JSON.stringify(action.payload));
+            } catch (e) {
+                console.error('Failed to save user to localStorage', e);
+            }
+            return { ...state, user: action.payload };
+        case 'UPDATE':
             try {
                 if (action.payload) localStorage.setItem('user', JSON.stringify(action.payload));
             } catch (e) {

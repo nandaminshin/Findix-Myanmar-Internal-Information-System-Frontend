@@ -3,6 +3,7 @@ import { useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from "../helpers/axios";
 
+
 const AuthNavigator = ({ children }: { children: React.ReactNode }) => {
     const auth = useContext(AuthContext);
     const user = auth?.user ?? null;
@@ -10,11 +11,10 @@ const AuthNavigator = ({ children }: { children: React.ReactNode }) => {
     const location = useLocation();
 
     useEffect(() => {
-        axios.get("/api/fmiis-backend/v001/auth/me");
         if (user) {
+            axios.get("/api/fmiis-backend/v001/auth/me");
             if (user.role === 'dev' && !location.pathname.startsWith('/dev')) {
                 navigate('/dev');
-                console.log("XD")
             } else if (user.role === 'glob' && !location.pathname.startsWith('/glob')) {
                 navigate('/glob');
 

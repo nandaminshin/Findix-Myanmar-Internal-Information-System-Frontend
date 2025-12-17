@@ -77,7 +77,17 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
                     )}
                 </div>
                 <div className="profile-icon" ref={profileRef} onClick={() => setProfileDropdown(!profileDropdown)}>
-                    <User size={20} />
+                    {user?.image ? (
+                        <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20">
+                            <img
+                                src={import.meta.env.VITE_BACKEND_URL + user.image}
+                                alt="Profile"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                    ) : (
+                        <User size={20} />
+                    )}
                     {profileDropdown && (
                         <div className="dropdown profile-dropdown">
                             <ul>

@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import './EmpManagement.css';
 import { socket } from '../../../lib/socket';
 import axios from '../../../helpers/axios';
+import { AuthContext } from '../../../contexts/AuthContext';
+import { useContext } from 'react';
 
 const EmpManagement: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -11,6 +13,7 @@ const EmpManagement: React.FC = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const auth = useContext(AuthContext);
 
     const fetchEmployees = async () => {
         try {
@@ -110,7 +113,15 @@ const EmpManagement: React.FC = () => {
                                     <td className="w-1/4">
                                         <div className="flex items-center gap-3">
                                             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md text-sm">
-                                                {employee.name.charAt(0).toUpperCase()}
+                                                {employee.image ? (
+                                                    <img
+                                                        src={import.meta.env.VITE_BACKEND_URL + employee.image}
+                                                        alt={employee.name}
+                                                        className="w-full h-full object-cover rounded-full"
+                                                    />
+                                                ) : (
+                                                    employee.name.charAt(0).toUpperCase()
+                                                )}
                                             </div>
                                             <div>
                                                 <div className="font-medium text-white text-sm">{employee.name}</div>
@@ -125,22 +136,41 @@ const EmpManagement: React.FC = () => {
                                     <td className="text-sm">{employee.phone}</td>
                                     <td className="text-sm"> {new Date(employee.date_of_hire).toLocaleDateString("en-GB")}</td>
                                     <td className=''>
-                                        <button
-                                            className="mb-6 relative z-10 cursor-pointer !text-green-500 hover:!text-green-300 transition-colors !text-xs !font-medium !bg-white/5 !px-2 !py-1 !rounded hover:!bg-white/10 active:!bg-white/20"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                const targetId = employee.id || (employee as any)._id;
-                                                console.log("Manage clicked for:", employee, "Target ID:", targetId);
-                                                if (targetId) {
-                                                    navigate(`/gm-md/employee/${targetId}`);
-                                                } else {
-                                                    console.error("No ID found for employee:", employee);
-                                                    alert("Error: Employee ID not found");
-                                                }
-                                            }}
-                                        >
-                                            Manage
-                                        </button>
+                                        {auth?.user?.id == employee.id ? (
+                                            <button
+                                                className="mb-6 relative z-10 cursor-pointer !text-yellow-500 hover:!text-yellow-300 transition-colors !text-xs !font-medium !bg-white/5 !px-2 !py-1 !rounded hover:!bg-white/10 active:!bg-white/20"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    const targetId = employee.id || (employee as any)._id;
+                                                    console.log("Manage clicked for:", employee, "Target ID:", targetId);
+                                                    if (targetId) {
+                                                        navigate(`/gm-md/employee/${targetId}`);
+                                                    } else {
+                                                        console.error("No ID found for employee:", employee);
+                                                        alert("Error: Employee ID not found");
+                                                    }
+                                                }}
+                                            >
+                                                Manage your profile
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="mb-6 relative z-10 cursor-pointer !text-green-500 hover:!text-green-300 transition-colors !text-xs !font-medium !bg-white/5 !px-2 !py-1 !rounded hover:!bg-white/10 active:!bg-white/20"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    const targetId = employee.id || (employee as any)._id;
+                                                    console.log("Manage clicked for:", employee, "Target ID:", targetId);
+                                                    if (targetId) {
+                                                        navigate(`/gm-md/employee/${targetId}`);
+                                                    } else {
+                                                        console.error("No ID found for employee:", employee);
+                                                        alert("Error: Employee ID not found");
+                                                    }
+                                                }}
+                                            >
+                                                Manage
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
