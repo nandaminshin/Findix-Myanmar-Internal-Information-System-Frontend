@@ -22,6 +22,9 @@ import HrEmpManagement from "../pages/Hr/EmpManagement/EmpManagement.tsx";
 import HrCreateEmployee from "../pages/Hr/CreateEmployee/CreateEmployee.tsx";
 import HrManageSingleEmployee from "../pages/Hr/ManageSingleEmployee/ManageSingleEmployee.tsx";
 import HrUpdateEmployee from "../pages/Hr/UpdateEmployee/UpdateEmployee.tsx";
+import Notifications from "../pages/Hr/Notification/Notifications.tsx";
+import SendNotification from "../pages/Hr/Notification/SendNotification.tsx";
+import FullSingleNotification from "../pages/Hr/Notification/FullSingleNotification.tsx";
 
 type ProtectedRouteProps = {
     children: ReactNode;
@@ -225,6 +228,30 @@ const AppRoutes = () => {
                     element: (
                         <ProtectedRoute requireAuth={true}>
                             <HrUpdateEmployee />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'notifications',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <Notifications />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'notifications/send',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <SendNotification />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'notifications/:id',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <FullSingleNotification />
                         </ProtectedRoute>
                     ),
                 }

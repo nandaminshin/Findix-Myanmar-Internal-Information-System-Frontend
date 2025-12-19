@@ -1,0 +1,202 @@
+/* FullSingleNotification.css */
+
+.email-container.glass-email {
+    /* Glassmorphism Base */
+    background: rgba(30, 30, 30, 0.4);
+    /* Darker, transparent base */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 0 auto;
+    max-width: 650px;
+    color: #e4e4e7;
+    /* Zinc-200 */
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.email-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b0764 100%);
+    /* Blue to Purple deep gradient */
+    color: white;
+    padding: 30px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.email-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.email-subtitle {
+    margin: 8px 0 0 0;
+    opacity: 0.8;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.email-content {
+    padding: 30px;
+}
+
+.email-noti-type {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #fff;
+    border-left: 4px solid #3b82f6;
+    /* Blue-500 */
+    padding-left: 12px;
+}
+
+.email-message-box {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin: 24px 0;
+}
+
+.email-info-box {
+    background: rgba(255, 255, 255, 0.03);
+    /* Subtle contrast */
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin: 24px 0;
+}
+
+.email-section-title {
+    margin-top: 0;
+    color: #93c5fd;
+    /* Blue-300 */
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.email-message-text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    color: #e4e4e7;
+}
+
+.email-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.email-label {
+    padding: 10px 0;
+    width: 100px;
+    color: #a1a1aa;
+    /* Zinc-400 */
+    font-size: 14px;
+}
+
+.email-value {
+    padding: 10px 0;
+    color: #fff;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.email-badge {
+    display: inline-block;
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.email-timestamp {
+    color: #71717a;
+    /* Zinc-500 */
+    font-size: 13px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.email-footer {
+    text-align: center;
+    margin-top: 0;
+    padding: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: #52525b;
+    /* Zinc-600 */
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 640px) {
+    .email-container.glass-email {
+        border-radius: 12px;
+    }
+
+    .email-header {
+        padding: 20px;
+    }
+
+    .email-title {
+        font-size: 20px;
+    }
+
+    .email-subtitle {
+        font-size: 13px;
+    }
+
+    .email-content {
+        padding: 20px;
+    }
+
+    .email-noti-type {
+        font-size: 18px;
+        margin-bottom: 16px;
+    }
+
+    .email-message-box,
+    .email-info-box {
+        padding: 16px;
+        margin: 16px 0;
+    }
+
+    .email-section-title {
+        font-size: 14px;
+    }
+
+    .email-message-text {
+        font-size: 14px;
+    }
+
+    .email-label {
+        font-size: 13px;
+        width: 80px;
+    }
+
+    .email-value {
+        font-size: 13px;
+    }
+
+    .email-footer {
+        padding: 16px;
+        font-size: 11px;
+    }
+}

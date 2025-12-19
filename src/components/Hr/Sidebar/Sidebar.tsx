@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Home, FileText, CircleDollarSign, Bell, Users } from 'lucide-react';
 import './Sidebar.css';
-
 interface SidebarProps {
     isOpen: boolean;
     onClose?: () => void;
@@ -27,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/hr/noti" className="sidebar-link">
+                        <NavLink to="/hr/notifications" className="sidebar-link">
                             <Bell size={20} />
                             <span>Notifications</span>
                         </NavLink>
