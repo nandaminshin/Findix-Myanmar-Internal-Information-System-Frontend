@@ -71,7 +71,7 @@ const SendNotification: React.FC = () => {
             if (selectedRole === 'dev') {
                 filteredEmployees = employees.filter(emp => emp.role === 'dev');
             } else if (selectedRole === 'glob') {
-                filteredEmployees = employees;
+                filteredEmployees = employees.filter(emp => emp.role === 'glob');
             } else if (selectedRole === 'gm-md') {
                 filteredEmployees = employees.filter(emp =>
                     (emp.role === 'gm' || emp.role === 'md') && emp.email !== auth?.user?.email
