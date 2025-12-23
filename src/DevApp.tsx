@@ -2,6 +2,7 @@ import './App.css'
 import { Outlet } from 'react-router-dom';
 import Sidebar from './components/Dev/Sidebar/Sidebar';
 import Nav from './components/Dev/Nav/Nav';
+import { NotificationProvider } from './contexts/NotificationContext';
 import { useState, useEffect } from 'react';
 
 function DevApp() {
@@ -24,11 +25,13 @@ function DevApp() {
     }, [sidebarOpen]);
 
     return (
-        <div className={`dev-home ${sidebarOpen ? 'sidebar-open' : ''}`}>
-            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-            <Nav toggleSidebar={toggleSidebar} />
-            <Outlet />
-        </div>
+        <NotificationProvider>
+            <div className={`dev-home ${sidebarOpen ? 'sidebar-open' : ''}`}>
+                <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+                <Nav toggleSidebar={toggleSidebar} />
+                <Outlet />
+            </div>
+        </NotificationProvider>
     )
 }
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../../../helpers/axios';
 import { ArrowLeft, User, Check, Mail, Hash } from 'lucide-react';
+import NotFoundInline from '../../../components/NotFoundInline/NotFoundInline';
 import './ManageSingleEmployee.css';
 
 interface FamilyInfo {
@@ -137,15 +138,15 @@ const ManageSingleEmployee: React.FC = () => {
 
     if (error || !employee) {
         return (
-            <div className="manage-single-employee-page flex flex-col items-center justify-center gap-4">
-                <div className="text-red-500 text-xl">{error || 'Employee not found'}</div>
-                <button
-                    onClick={() => navigate('/hr/employee-management')}
-                    className="compact-btn btn-secondary flex items-center gap-2"
-                >
-                    <ArrowLeft size={16} />
-                    Go Back
-                </button>
+            <div className="manage-single-employee-page">
+                <div className="main-content">
+                    <NotFoundInline
+                        title="Employee Not Found"
+                        message={error || "The employee you're looking for doesn't exist or may have been removed."}
+                        backPath="/hr/employee-management"
+                        showImage={true}
+                    />
+                </div>
             </div>
         );
     }

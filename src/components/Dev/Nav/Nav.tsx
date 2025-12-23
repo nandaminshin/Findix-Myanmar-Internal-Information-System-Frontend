@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { Bell, User, LogOut, Settings, Menu } from 'lucide-react';
+import { Bell, User, LogOut, Settings, Menu, Clock } from 'lucide-react';
 import './Nav.css';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useNotifications } from '../../../contexts/NotificationContext';
 import axios from 'axios';
 
 interface NavProps {
@@ -19,6 +20,7 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
     const auth = useContext(AuthContext);
     const user = auth?.user;
     const navigate = useNavigate();
+    const { notifications, unseenCount, markAsSeen } = useNotifications();
 
     const handleLogout = async () => {
         try {
@@ -33,8 +35,15 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
         } catch (error) {
             console.error('Logout failed:', error);
         }
-
     }
+
+    const handleNotificationClick = async (notificationId: string | undefined) => {
+        if (!notificationId) return;
+
+        await markAsSeen(notificationId);
+        setNotificationDropdown(false);
+        navigate(`/dev/notifications/${notificationId}`);
+    };
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -52,6 +61,11 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
         };
     }, []);
 
+    // Get user-specific notifications (only first 5 for dropdown)
+    const userNotifications = notifications
+        .filter(noti => noti.receivers.some(r => r.email === user?.email))
+        .slice(0, 5);
+
     return (
         <nav className="navbar">
             <div className="navbar-left">
@@ -66,13 +80,56 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
             <div className="navbar-right">
                 <div className="notification-icon" ref={notificationRef} onClick={() => setNotificationDropdown(!notificationDropdown)}>
                     <Bell size={20} />
+                    {unseenCount > 0 && (
+                        <span className="notification-badge">{unseenCount}</span>
+                    )}
                     {notificationDropdown && (
                         <div className="dropdown notification-dropdown">
-                            <ul>
-                                <li role="button" tabIndex={0} onClick={() => { /* notification 1 click */ }}>Notification 1</li>
-                                <li role="button" tabIndex={0} onClick={() => { /* notification 2 click */ }}>Notification 2</li>
-                                <li role="button" tabIndex={0} onClick={() => { /* notification 3 click */ }}>Notification 3</li>
+                            <div className="notification-dropdown-header">
+                                <h3>Notifications</h3>
+                                {unseenCount > 0 && <span className="unseen-count">{unseenCount} new</span>}
+                            </div>
+                            <ul className="notification-list">
+                                {userNotifications.length === 0 ? (
+                                    <li className="no-notifications">No notifications</li>
+                                ) : (
+                                    userNotifications.map((noti, index) => {
+                                        const userReceiver = noti.receivers.find(r => r.email === user?.email);
+                                        const isUnseen = userReceiver && !userReceiver.is_seen;
+
+                                        return (
+                                            <li
+                                                key={index}
+                                                role="button"
+                                                tabIndex={0}
+                                                onClick={() => handleNotificationClick(noti.id)}
+                                                className={`notification-item ${isUnseen ? 'unseen' : ''}`}
+                                            >
+                                                <div className="notification-item-header">
+                                                    {isUnseen && <div className="unseen-dot"></div>}
+                                                    <span className={`notification-type ${noti.noti_type === 'Emergency Meeting' ? 'emergency' : noti.noti_type.includes('Meeting') ? 'meeting' : 'general'}`}>
+                                                        {noti.noti_type}
+                                                    </span>
+                                                </div>
+                                                <p className="notification-content">
+                                                    {noti.content.split(' ').slice(0, 8).join(' ')}...
+                                                </p>
+                                                <div className="notification-meta">
+                                                    <Clock size={12} />
+                                                    <span>{new Date(noti.created_at).toLocaleDateString()}</span>
+                                                </div>
+                                            </li>
+                                        );
+                                    })
+                                )}
                             </ul>
+                            {userNotifications.length > 0 && (
+                                <div className="notification-dropdown-footer">
+                                    <button onClick={() => { setNotificationDropdown(false); navigate('/dev/notifications'); }}>
+                                        View All Notifications
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

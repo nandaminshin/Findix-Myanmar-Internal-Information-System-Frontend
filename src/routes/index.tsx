@@ -25,6 +25,8 @@ import HrUpdateEmployee from "../pages/Hr/UpdateEmployee/UpdateEmployee.tsx";
 import Notifications from "../pages/Hr/Notification/Notifications.tsx";
 import SendNotification from "../pages/Hr/Notification/SendNotification.tsx";
 import FullSingleNotification from "../pages/Hr/Notification/FullSingleNotification.tsx";
+import DevFullSingleNotification from "../pages/Dev/DevNoti/DevFullSingleNotification.tsx";
+import NotFound from "../pages/NotFound/NotFound.tsx";
 
 type ProtectedRouteProps = {
     children: ReactNode;
@@ -97,10 +99,18 @@ const AppRoutes = () => {
                     ),
                 },
                 {
-                    path: 'noti',
+                    path: 'notifications',
                     element: (
                         <ProtectedRoute requireAuth={true}>
                             <DevNoti />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'notifications/:id',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <DevFullSingleNotification />
                         </ProtectedRoute>
                     ),
                 },
@@ -256,6 +266,10 @@ const AppRoutes = () => {
                     ),
                 }
             ],
+        },
+        {
+            path: '*',
+            element: <NotFound />,
         },
     ]);
 
