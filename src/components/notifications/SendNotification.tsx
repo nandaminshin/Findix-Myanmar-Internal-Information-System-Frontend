@@ -27,8 +27,8 @@ const notiTypes = [
 ];
 
 const contentTemplates: Record<string, string> = {
-    "Morning Meeting": "Good morning team! This is a reminder for our morning meeting.",
-    "Developer Meeting": "Hello developers! This is a notification for our developer meeting.",
+    "Morning Meeting": "Good morning team! This is a reminder for our morning meeting. Join the meeting at 8:30AM Yangon Time via this link - https://us02web.zoom.us/j/82024496813?pwd=SEZXOW9XUWNsSjUwY29oVFg3RXNXUT09",
+    "Developer Meeting": "Hello developers! This is a notification for our developer meeting.Join the developer meeting at 11AM Yangon Time via this link - https://us02web.zoom.us/j/86453347948?pwd=QWhvNEdqNWdoY0RIM29PeUFva2JFUT09",
     "Kosugi Meeting": "Attention team! This is a notification for the Kosugi meeting.",
     "Emergency Meeting": "URGENT: Emergency meeting notification. Please attend immediately.",
     "Internal Meeting": "This is a notification for our internal meeting.",
