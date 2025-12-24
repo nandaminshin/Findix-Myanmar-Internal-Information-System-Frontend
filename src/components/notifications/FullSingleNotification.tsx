@@ -128,7 +128,7 @@ const FullSingleNotification: React.FC = () => {
                                 <div className="flex gap-3">
                                     <h3 className="email-section-title">👤 From</h3>
                                     {notification.sender.image ? (
-                                        <img src={import.meta.env.VITE_BACKEND_URL + notification.sender.image} alt="" className='w-10 h-10 rounded-full mb-4' />
+                                        <img src={notification.sender.image} alt="" className='w-10 h-10 rounded-full mb-4' />
                                     ) : (
                                         <User size={20} />
                                     )}

@@ -14,6 +14,15 @@ interface FamilyInfo {
     child: number;
 }
 
+interface LeaveInfo {
+    remaining_casual_leave: number;
+    remaining_earned_leave: number;
+    remaining_medical_leave: number;
+    remaining_special_leave: number;
+    unpaid_leave: number;
+    prepaid_leave: number;
+}
+
 interface Employee {
     id: string;
     name: string;
@@ -35,6 +44,7 @@ interface Employee {
     image?: string | null;
     note: string;
     family_info: FamilyInfo;
+    leave_info?: LeaveInfo;
 }
 
 const ManageSingleEmployee: React.FC = () => {
@@ -178,7 +188,7 @@ const ManageSingleEmployee: React.FC = () => {
                                 <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center shadow-2xl">
                                     {employee.image ? (
                                         <img
-                                            src={import.meta.env.VITE_BACKEND_URL + employee.image}
+                                            src={employee.image}
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
@@ -297,6 +307,37 @@ const ManageSingleEmployee: React.FC = () => {
                                 </div>
                             </section>
 
+                            {/* Leave Information */}
+                            <section>
+                                <h3 className="section-title">Leave Information</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                        <label className="info-label">Casual Leave</label>
+                                        <div className="info-value">{employee.leave_info?.remaining_casual_leave ?? '-'}</div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="info-label">Earned Leave</label>
+                                        <div className="info-value">{employee.leave_info?.remaining_earned_leave ?? '-'}</div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="info-label">Medical Leave</label>
+                                        <div className="info-value">{employee.leave_info?.remaining_medical_leave ?? '-'}</div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="info-label">Special Leave</label>
+                                        <div className="info-value">{employee.leave_info?.remaining_special_leave ?? '-'}</div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="info-label">Unpaid Leave</label>
+                                        <div className="info-value">{employee.leave_info?.unpaid_leave ?? '-'}</div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="info-label">Prepaid Leave</label>
+                                        <div className="info-value">{employee.leave_info?.prepaid_leave ?? '-'}</div>
+                                    </div>
+                                </div>
+                            </section>
+
                             {/* Additional Note */}
                             {employee.note && (
                                 <section className="lg:col-span-2">
@@ -328,53 +369,55 @@ const ManageSingleEmployee: React.FC = () => {
             </div>
 
             {/* Delete Confirmation Modal */}
-            {showDeleteModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-zinc-900 border border-white/10 rounded-2xl p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
-                        <h3 className="text-xl font-bold text-white mb-2">Delete Employee</h3>
-                        <p className="text-gray-400 text-sm mb-6">
-                            Are you sure you want to delete <span className="text-white font-medium">{employee.name}</span>?
-                            This action cannot be undone.
-                        </p>
+            {
+                showDeleteModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+                        <div className="bg-zinc-900 border border-white/10 rounded-2xl p-6 max-w-md w-full shadow-2xl scale-100 animate-in zoom-in-95 duration-200">
+                            <h3 className="text-xl font-bold text-white mb-2">Delete Employee</h3>
+                            <p className="text-gray-400 text-sm mb-6">
+                                Are you sure you want to delete <span className="text-white font-medium">{employee.name}</span>?
+                                This action cannot be undone.
+                            </p>
 
-                        <div className="mb-6">
-                            <label className="text-xs text-gray-500 font-medium mb-1.5 block">ENTER SECRET CODE</label>
-                            <input
-                                type="password"
-                                value={deleteSecretCode}
-                                onChange={(e) => setDeleteSecretCode(e.target.value)}
-                                className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-red-500/50 transition-colors"
-                                placeholder="Enter code to confirm"
-                                autoFocus
-                            />
-                        </div>
+                            <div className="mb-6">
+                                <label className="text-xs text-gray-500 font-medium mb-1.5 block">ENTER SECRET CODE</label>
+                                <input
+                                    type="password"
+                                    value={deleteSecretCode}
+                                    onChange={(e) => setDeleteSecretCode(e.target.value)}
+                                    className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-red-500/50 transition-colors"
+                                    placeholder="Enter code to confirm"
+                                    autoFocus
+                                />
+                            </div>
 
-                        <div className="flex gap-3 justify-end">
-                            <button
-                                onClick={() => setShowDeleteModal(false)}
-                                className="!px-3 !py-1.5 !rounded-lg !bg-zinc-800 !hover:bg-zinc-700 !text-zinc-400 !hover:text-white !transition-colors !text-xs !font-medium !border !border-zinc-700/50"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={confirmDelete}
-                                disabled={isDeleting || !deleteSecretCode}
-                                className="flex justify-center !px-3 !py-1.5 !rounded-lg !bg-red-500/10 !hover:bg-red-500/20 !text-red-500 !border !border-red-500/20 !transition-colors !text-xs !font-medium !disabled:opacity-50 !disabled:cursor-not-allowed !flex !items-center !gap-2"
-                            >
-                                {isDeleting ? (
-                                    <>
-                                        <div className="w-3 h-3 border-2 border-red-500/30 border-t-red-500 rounded-full animate-spin" />
-                                        <span>Deleting...</span>
-                                    </>
-                                ) : (
-                                    'Confirm Delete'
-                                )}
-                            </button>
+                            <div className="flex gap-3 justify-end">
+                                <button
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className="!px-3 !py-1.5 !rounded-lg !bg-zinc-800 !hover:bg-zinc-700 !text-zinc-400 !hover:text-white !transition-colors !text-xs !font-medium !border !border-zinc-700/50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={confirmDelete}
+                                    disabled={isDeleting || !deleteSecretCode}
+                                    className="flex justify-center !px-3 !py-1.5 !rounded-lg !bg-red-500/10 !hover:bg-red-500/20 !text-red-500 !border !border-red-500/20 !transition-colors !text-xs !font-medium !disabled:opacity-50 !disabled:cursor-not-allowed !flex !items-center !gap-2"
+                                >
+                                    {isDeleting ? (
+                                        <>
+                                            <div className="w-3 h-3 border-2 border-red-500/30 border-t-red-500 rounded-full animate-spin" />
+                                            <span>Deleting...</span>
+                                        </>
+                                    ) : (
+                                        'Confirm Delete'
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

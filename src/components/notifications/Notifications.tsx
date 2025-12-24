@@ -90,7 +90,7 @@ const Notifications: React.FC = () => {
                                                             <div className="flex items-center gap-2">
                                                                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-[10px] text-white font-bold border border-white/10">
                                                                     {noti.sender.image ? (
-                                                                        <img src={import.meta.env.VITE_BACKEND_URL + noti.sender.image} alt={noti.sender.name} className="w-full h-full object-cover rounded-full" />
+                                                                        <img src={noti.sender.image} alt={noti.sender.name} className="w-full h-full object-cover rounded-full" />
                                                                     ) : (
                                                                         noti.sender.name.charAt(0)
                                                                     )}

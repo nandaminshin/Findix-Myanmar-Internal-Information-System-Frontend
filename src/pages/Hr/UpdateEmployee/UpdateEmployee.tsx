@@ -19,6 +19,15 @@ interface FamilyInfo {
     child: number;
 }
 
+interface LeaveInfo {
+    remaining_casual_leave: number;
+    remaining_earned_leave: number;
+    remaining_medical_leave: number;
+    remaining_special_leave: number;
+    unpaid_leave: number;
+    prepaid_leave: number;
+}
+
 interface EmployeeForm {
     name: string;
     email: string;
@@ -37,6 +46,7 @@ interface EmployeeForm {
     emergency_address: string;
     emergency_phone: string;
     family_info: FamilyInfo;
+    leave_info?: LeaveInfo;
     note: string;
     image?: string
 }
@@ -80,6 +90,14 @@ const UpdateEmployee: React.FC = () => {
             spouse_allowance: false,
             child: 0
         },
+        leave_info: {
+            remaining_casual_leave: 0,
+            remaining_earned_leave: 0,
+            remaining_medical_leave: 0,
+            remaining_special_leave: 0,
+            unpaid_leave: 0,
+            prepaid_leave: 0
+        },
         note: '',
         image: ''
     };
@@ -112,6 +130,7 @@ const UpdateEmployee: React.FC = () => {
                         emergency_address: emp.emergency_address || '',
                         emergency_phone: emp.emergency_phone || '',
                         family_info: emp.family_info || initialFormState.family_info,
+                        leave_info: emp.leave_info || initialFormState.leave_info,
                         note: emp.note || '',
                         image: emp.image || ''
                     });
@@ -137,6 +156,15 @@ const UpdateEmployee: React.FC = () => {
                 family_info: {
                     ...prev.family_info,
                     [familyField]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : (type === 'number' ? parseInt(value) : value)
+                }
+            }));
+        } else if (name.startsWith('leave_info.')) {
+            const leaveField = name.split('.')[1];
+            setFormData(prev => ({
+                ...prev,
+                leave_info: {
+                    ...(prev.leave_info || initialFormState.leave_info!),
+                    [leaveField]: parseInt(value)
                 }
             }));
         } else if (type === 'date' && name === 'date_of_retirement' && value === '') {
@@ -296,7 +324,7 @@ const UpdateEmployee: React.FC = () => {
                             <div className="relative group cursor-pointer" onClick={triggerFileInput}>
                                 <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-white/20 bg-zinc-900 flex items-center justify-center">
                                     {formData.image && !newImage ? (
-                                        <img src={import.meta.env.VITE_BACKEND_URL + formData.image} alt="Profile" className="w-full h-full object-cover" />
+                                        <img src={formData.image} alt="Profile" className="w-full h-full object-cover" />
                                     ) : formData.image ? (
                                         <img src={formData.image} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
@@ -505,6 +533,37 @@ const UpdateEmployee: React.FC = () => {
                                 <div className="space-y-1.5">
                                     <label className="text-xs text-gray-400 font-medium ml-1">Secret Code</label>
                                     <input required name="secret_code" value={formData.secret_code} onChange={handleInputChange} className="form-input-compact" placeholder="Only for GM/MD/HR" />
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Leave Information */}
+                        <section>
+                            <h3 className="section-title">Leave Information</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs text-gray-400 font-medium ml-1">Casual Leave</label>
+                                    <input type="number" name="leave_info.remaining_casual_leave" value={formData.leave_info?.remaining_casual_leave} onChange={handleInputChange} className="form-input-compact" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs text-gray-400 font-medium ml-1">Earned Leave</label>
+                                    <input type="number" name="leave_info.remaining_earned_leave" value={formData.leave_info?.remaining_earned_leave} onChange={handleInputChange} className="form-input-compact" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs text-gray-400 font-medium ml-1">Medical Leave</label>
+                                    <input type="number" name="leave_info.remaining_medical_leave" value={formData.leave_info?.remaining_medical_leave} onChange={handleInputChange} className="form-input-compact" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs text-gray-400 font-medium ml-1">Special Leave</label>
+                                    <input type="number" name="leave_info.remaining_special_leave" value={formData.leave_info?.remaining_special_leave} onChange={handleInputChange} className="form-input-compact" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs text-gray-400 font-medium ml-1">Unpaid Leave</label>
+                                    <input type="number" name="leave_info.unpaid_leave" value={formData.leave_info?.unpaid_leave} onChange={handleInputChange} className="form-input-compact" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs text-gray-400 font-medium ml-1">Prepaid Leave</label>
+                                    <input type="number" name="leave_info.prepaid_leave" value={formData.leave_info?.prepaid_leave} onChange={handleInputChange} className="form-input-compact" />
                                 </div>
                             </div>
                         </section>

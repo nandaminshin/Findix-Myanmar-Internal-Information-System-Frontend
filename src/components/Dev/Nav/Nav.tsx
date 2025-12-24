@@ -137,7 +137,7 @@ const Nav: React.FC<NavProps> = ({ toggleSidebar }) => {
                     {user?.image ? (
                         <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20">
                             <img
-                                src={import.meta.env.VITE_BACKEND_URL + user.image}
+                                src={user.image}
                                 alt="Profile"
                                 className="w-full h-full object-cover"
                             />

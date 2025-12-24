@@ -103,7 +103,7 @@ const EmpManagement: React.FC = () => {
                                             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-md text-sm">
                                                 {employee.image ? (
                                                     <img
-                                                        src={import.meta.env.VITE_BACKEND_URL + employee.image}
+                                                        src={employee.image}
                                                         alt={employee.name}
                                                         className="w-full h-full object-cover rounded-full"
                                                     />
