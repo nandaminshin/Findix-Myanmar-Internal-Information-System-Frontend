@@ -34,6 +34,22 @@ const FullSingleNotification: React.FC = () => {
     const [error, setError] = useState('');
     const auth = useContext(AuthContext);
 
+    const authUserRole = auth?.user?.role;
+    let urlRole: string;
+    switch (authUserRole) {
+        case 'gm':
+            urlRole = 'gm-md';
+            break;
+        case 'md':
+            urlRole = 'gm-md';
+            break;
+        case 'hr':
+            urlRole = 'hr';
+            break;
+        default:
+            urlRole = '';
+    }
+
     useEffect(() => {
         const fetchNotification = async () => {
             try {
@@ -72,7 +88,7 @@ const FullSingleNotification: React.FC = () => {
                     <NotFoundInline
                         title="Notification Not Found"
                         message={error || "The notification you're looking for doesn't exist or may have been removed."}
-                        backPath={`/${auth?.user?.role}/notifications`}
+                        backPath={`/${urlRole}/notifications`}
                         showImage={true}
                     />
                 </div>
@@ -86,7 +102,7 @@ const FullSingleNotification: React.FC = () => {
                 <div className="p-6 md:p-8">
                     <div className="max-w-3xl mx-auto mb-6">
                         <button
-                            onClick={() => navigate(`/${auth?.user?.role}/notifications`)}
+                            onClick={() => navigate(`/${urlRole}/notifications`)}
                             className="flex items-center gap-2 !bg-zinc-950 hover:!bg-zinc-900 !text-white !px-3 !py-1.5 !rounded-lg transition-all shadow-md hover:shadow-lg !font-medium !text-sm !border !border-zinc-800"
                         >
                             <ArrowLeft size={16} />

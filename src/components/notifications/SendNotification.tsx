@@ -50,6 +50,21 @@ const SendNotification: React.FC = () => {
     const [selectedNotiType, setSelectedNotiType] = useState<string>('');
     const [content, setContent] = useState<string>('');
 
+    const authUserRole = auth?.user?.role;
+    let urlRole: string;
+    switch (authUserRole) {
+        case 'gm':
+            urlRole = 'gm-md';
+            break;
+        case 'md':
+            urlRole = 'gm-md';
+            break;
+        case 'hr':
+            urlRole = 'hr';
+            break;
+        default:
+            urlRole = '';
+    }
     // Fetch all employees on mount
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -143,7 +158,7 @@ const SendNotification: React.FC = () => {
 
             await axios.post('/api/fmiis-backend/v001/send-notification', payload);
             alert('Notification sent successfully!');
-            navigate(`/${auth?.user?.role}/notifications`);
+            navigate(`/${urlRole}/notifications`);
         } catch (error) {
             console.error('Error sending notification:', error);
             alert('Failed to send notification');
@@ -160,7 +175,7 @@ const SendNotification: React.FC = () => {
                 <div className="p-6 md:p-8">
                     <div className="max-w-2xl mx-auto">
                         <button
-                            onClick={() => navigate(`/${auth?.user?.role}/notifications`)}
+                            onClick={() => navigate(`/${urlRole}/notifications`)}
                             className="mb-6 flex items-center gap-2 !bg-zinc-950 hover:!bg-zinc-900 !text-white !px-3 !py-1.5 !rounded-lg transition-all shadow-md hover:shadow-lg !font-medium !text-sm !border !border-zinc-800"
                         >
                             <ArrowLeft size={16} />

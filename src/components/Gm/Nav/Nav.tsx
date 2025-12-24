@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Bell, User, LogOut, Settings, Menu, Clock } from 'lucide-react';
 import './Nav.css';
-import './NotificationDropdown.css';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../../../contexts/NotificationContext';

@@ -9,14 +9,29 @@ const Notifications: React.FC = () => {
     const auth = useContext(AuthContext);
     const { notifications, loading, error, markAsSeen } = useNotifications();
 
+    const authUserRole = auth?.user?.role;
+    const canSendNotification = ['gm', 'md', 'hr'].includes(authUserRole || '');
+    let urlRole: string;
+    switch (authUserRole) {
+        case 'gm':
+            urlRole = 'gm-md';
+            break;
+        case 'md':
+            urlRole = 'gm-md';
+            break;
+        case 'hr':
+            urlRole = 'hr';
+            break;
+        default:
+            urlRole = '';
+    }
+
     const handleSingleNotificationClick = async (notificationId: string | undefined) => {
         if (!notificationId) return;
 
         await markAsSeen(notificationId);
-        navigate(`/${auth?.user?.role}/notifications/${notificationId}`);
+        navigate(`/${urlRole}/notifications/${notificationId}`);
     };
-
-    const canSendNotification = ['gm', 'md', 'hr'].includes(auth?.user?.role || '');
 
     return (
         <div className="notifications-page">
@@ -33,7 +48,7 @@ const Notifications: React.FC = () => {
                             </div>
                             {canSendNotification && (
                                 <button
-                                    onClick={() => navigate(`/${auth?.user?.role}/notifications/send`)}
+                                    onClick={() => navigate(`/${urlRole}/notifications/send`)}
                                     className="flex items-center gap-2 !bg-zinc-950 hover:!bg-zinc-900 !text-white !px-3 !py-1.5 !rounded-lg transition-all shadow-md hover:shadow-lg !font-medium !text-sm !border !border-zinc-800"
                                 >
                                     <Send size={16} />

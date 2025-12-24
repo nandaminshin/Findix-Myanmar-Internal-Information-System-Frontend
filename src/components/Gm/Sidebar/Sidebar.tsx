@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink to="/gm-md/noti" className="sidebar-link">
+                        <NavLink to="/gm-md/notifications" className="sidebar-link">
                             <Bell size={20} />
                             <span>Notifications</span>
                         </NavLink>

@@ -22,11 +22,14 @@ import HrEmpManagement from "../pages/Hr/EmpManagement/EmpManagement.tsx";
 import HrCreateEmployee from "../pages/Hr/CreateEmployee/CreateEmployee.tsx";
 import HrManageSingleEmployee from "../pages/Hr/ManageSingleEmployee/ManageSingleEmployee.tsx";
 import HrUpdateEmployee from "../pages/Hr/UpdateEmployee/UpdateEmployee.tsx";
-import Notifications from "../pages/Hr/Notification/Notifications.tsx";
-import SendNotification from "../pages/Hr/Notification/SendNotification.tsx";
-import FullSingleNotification from "../pages/Hr/Notification/FullSingleNotification.tsx";
+import HrNotifications from "../pages/Hr/Notification/Notifications.tsx";
+import HrSendNotification from "../pages/Hr/Notification/SendNotification.tsx";
+import HrFullSingleNotification from "../pages/Hr/Notification/FullSingleNotification.tsx";
 import DevFullSingleNotification from "../pages/Dev/DevNoti/DevFullSingleNotification.tsx";
 import NotFound from "../pages/NotFound/NotFound.tsx";
+import GmNotifications from "../pages/Gm/Notification/Notifications.tsx";
+import GmSendNotification from "../pages/Gm/Notification/SendNotification.tsx";
+import GmFullSingleNotification from "../pages/Gm/Notification/FullSingleNotification.tsx";
 
 type ProtectedRouteProps = {
     children: ReactNode;
@@ -190,6 +193,30 @@ const AppRoutes = () => {
                             <UpdateEmployee />
                         </ProtectedRoute>
                     ),
+                },
+                {
+                    path: 'notifications',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <GmNotifications />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'notifications/send',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <GmSendNotification />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: 'notifications/:id',
+                    element: (
+                        <ProtectedRoute requireAuth={true}>
+                            <GmFullSingleNotification />
+                        </ProtectedRoute>
+                    ),
                 }
             ],
         },
@@ -245,7 +272,7 @@ const AppRoutes = () => {
                     path: 'notifications',
                     element: (
                         <ProtectedRoute requireAuth={true}>
-                            <Notifications />
+                            <HrNotifications />
                         </ProtectedRoute>
                     ),
                 },
@@ -253,7 +280,7 @@ const AppRoutes = () => {
                     path: 'notifications/send',
                     element: (
                         <ProtectedRoute requireAuth={true}>
-                            <SendNotification />
+                            <HrSendNotification />
                         </ProtectedRoute>
                     ),
                 },
@@ -261,7 +288,7 @@ const AppRoutes = () => {
                     path: 'notifications/:id',
                     element: (
                         <ProtectedRoute requireAuth={true}>
-                            <FullSingleNotification />
+                            <HrFullSingleNotification />
                         </ProtectedRoute>
                     ),
                 }
