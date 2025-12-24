@@ -46,6 +46,9 @@ const FullSingleNotification: React.FC = () => {
         case 'hr':
             urlRole = 'hr';
             break;
+        case 'dev':
+            urlRole = 'dev';
+            break;
         default:
             urlRole = '';
     }
